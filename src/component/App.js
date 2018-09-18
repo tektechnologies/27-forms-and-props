@@ -3,49 +3,61 @@ import List from './search/resultList';
 import Search from './search/searchForm';
 import superagent from 'superagent';
 
+let redditAPI = `https://www.reddit.com/r`;
 
 export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       topics: [],
-      sub: 'nfl',
+      sub: null,
       limit: null,
     }
-    this.redditAPI = `https://www.reddit.com/r/${this.state.sub}.json?limit=${this.state.limit}`;
-    //this.loadTopics = this.loadTopics.bind(this);
+    
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
   componentDidUpdate(){
-    console.log('__STATE__', this.state);
+    console.log('Updated __STATE__', this.state);
   }
 
   async componentDidMount(){
-    console.log('__STATE__', this.state);
-    const data = await (this.searchReddit());
+    console.log('Mounted __STATE__', this.state);
+    const data = await (this.searchReddit(this.state));
     this.setState(Object.assign(...this.state, data));
   }
 
-  handleSubmit(e){
+  async handleSubmit(e){
     e.preventDefault();
     e.stopPropagation();
-    let sub = e.target.getElementById('sub').value;
-    let limit = e.target.getElementById('limit').value;
-    this.setState(Object.assign(...this.state, limit, sub));
-    this.searchReddit();
+    let target = e.target;
+    console.log(target);
+    let sub = document.getElementById('sub').value;
+    let limit = document.getElementById('limit').value;
+    console.log(sub, limit);
+    this.setState({sub: sub, limit: limit});
+    let topics = await this.searchReddit({sub, limit});
+    this.setState({topics: topics});
+    
   }
 
-  async searchReddit(){
-    const page = await (this.fetchData(this.redditAPI));
-    let topicList = page.data;
-    console.log(topicList);
-    return {topicList};
+  async searchReddit(state){
+    const page = await (this.fetchData(state));
+    let topics = [];
+    page.data.children.forEach(child =>{
+      topics.push(child.data.title);
+    });
+    console.log(topics);
+    return topics;
   }
 
-  fetchData(url){
-    return superagent.get(url)
+  fetchData(state){
+    console.log(state);
+    console.log(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
+    return superagent.get(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
       .then(result=>{
+        console.log(result.body.data.children[0].data.title);
         return result.body;
       })
       .catch(console.error);

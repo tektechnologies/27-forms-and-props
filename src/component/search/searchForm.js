@@ -7,7 +7,7 @@ export default class Search extends React.Component {
   render() {
     return(
       <div>
-        <form onSubmit = {this.props.handleSubmit}>
+        <form onSubmit = {this.props.formSubmit}>
           <input id="sub" type='text' placeholder="Search"/>
           <input id="limit" type='text' placeholder="limit"/>
           <input type='submit' value='Submit'/>
