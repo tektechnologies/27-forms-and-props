@@ -12,7 +12,7 @@ export default class App extends React.Component {
       topics: [],
       sub: null,
       limit: null,
-    }
+    };
     
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -54,7 +54,7 @@ export default class App extends React.Component {
 
   fetchData(state){
     console.log(state);
-    console.log(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
+    console.log(`${redditAPI}/${state.sub}.json?limit=${state.limit}`);
     return superagent.get(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
       .then(result=>{
         console.log(result.body.data.children[0].data.title);
@@ -67,6 +67,7 @@ export default class App extends React.Component {
     return (
       <React.Fragment>
         <Search formSubmit={this.handleSubmit}/>
+        <List topics={this.state.topics}/>
       </React.Fragment>
     );
   }
