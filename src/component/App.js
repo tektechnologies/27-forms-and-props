@@ -9,10 +9,10 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       topics: [],
-      sub: null,
+      sub: 'nfl',
       limit: null,
     }
-    this.redditAPI = 'https://www.reddit.com/r/${this.state.sub}.json?limit=${this.state.limit}';
+    this.redditAPI = `https://www.reddit.com/r/${this.state.sub}.json?limit=${this.state.limit}`;
     //this.loadTopics = this.loadTopics.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
@@ -21,9 +21,9 @@ export default class App extends React.Component {
     console.log('__STATE__', this.state);
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     console.log('__STATE__', this.state);
-    const data = this.searchReddit();
+    const data = await (this.searchReddit());
     this.setState(Object.assign(...this.state, data));
   }
 
@@ -36,9 +36,10 @@ export default class App extends React.Component {
     this.searchReddit();
   }
 
-  searchReddit(){
-    const page = this.fetchData(this.redditAPI);
-    let topicList = page.results;
+  async searchReddit(){
+    const page = await (this.fetchData(this.redditAPI));
+    let topicList = page.data;
+    console.log(topicList);
     return {topicList};
   }
 
@@ -53,7 +54,7 @@ export default class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-
+        <Search formSubmit={this.handleSubmit}/>
       </React.Fragment>
     );
   }
