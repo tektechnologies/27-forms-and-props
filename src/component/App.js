@@ -66,7 +66,7 @@ export default class App extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Search formSubmit={this.handleSubmit}/>
+        <List topics={this.state.topics}/>
       </React.Fragment>
     );
   }
