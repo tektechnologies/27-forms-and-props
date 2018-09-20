@@ -33,6 +33,8 @@ export default class App extends React.Component {
     e.stopPropagation();
     let target = e.target;
     console.log(target);
+    //let sub = event.target.sub.value;
+    //let limit = event.target.limit.value;
     let sub = document.getElementById('sub').value;
     let limit = document.getElementById('limit').value;
     console.log(sub, limit);
@@ -46,6 +48,7 @@ export default class App extends React.Component {
     const page = await (this.fetchData(state));
     let topics = [];
     page.data.children.forEach(child =>{
+      //map will not work here
       topics.push(child.data.title);
     });
     console.log(topics);
@@ -55,9 +58,10 @@ export default class App extends React.Component {
   fetchData(state){
     console.log(state);
     console.log(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
+    //path to reddit articles
     return superagent.get(`${redditAPI}/${state.sub}.json?limit=${state.limit}`)
       .then(result=>{
-        console.log(result.body.data.children[0].data.title);
+       // console.log(result.body.data.children[0].data.title);
         return result.body;
       })
       .catch(console.error);
@@ -66,7 +70,11 @@ export default class App extends React.Component {
   render() {
     return (
       <React.Fragment>
+
         <Search formSubmit={this.handleSubmit}/>
+        
+        <List topics={this.state.topics}/>
+
       </React.Fragment>
     );
   }
